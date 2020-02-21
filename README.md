@@ -1,2 +1,6 @@
 # Crime-Info-Inquiry
-Government crime information inquiry website. Use node.js and react.js.
+This project is a "Government Crime Info Inquiry Website".
+
+Use node.js, react.js and Knex.js
+
+This project includes two parts: client side and server side.
