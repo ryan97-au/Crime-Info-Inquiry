@@ -1,4 +1,4 @@
-# Crime-Info-Inquiry
+# Crime Info Inquiry
 This project is a "Government Crime Info Inquiry Website".
 
 Use node.js, react.js and Knex.js
