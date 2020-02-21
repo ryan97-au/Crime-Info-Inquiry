@@ -1,0 +1,537 @@
+{ "openapi":"3.0.0",
+    "info":{ 
+        "title":"Crime API",
+        "description":"This is a simple Express API based on the Crime of the Queensland Government. It supports basic offences listings, along with filtering based on areas, ages, genders and years",
+        "version":"1.0.0",
+        "termsOfService":"http://swagger.io/terms/",
+        "contact":{"email":"n10322434@qut.edu.au"} 
+    },
+    "servers":[ 
+        {
+            "url": "https://localhost/"
+        }
+    ],
+    "paths":{ 
+        "/register":{
+            "post":{
+                "tags":["Authentication"],
+                "summary":"Registers a new user account",
+                "description":"For register",
+                "operationId":"post_register",
+                "produces":["application/json"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email":{
+                                        "type":"string",
+                                        "example":"demo-user@gmail.com",
+                                        "description":"Email",
+                                        "required":true
+                                    },
+                                    "password":{
+                                        "type":"string",
+                                        "example":"demouserpassword",
+                                        "description":"Password",
+                                        "required":true
+                                    }
+                                },
+                                "example":{
+                                    "email":"demo-user@gmail.com",
+                                    "password":"demouserpassword"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "201":{
+                        "description":"Created",
+                        "schema":{
+                            "type":"object",
+                            "properties":{
+                                "Message":{
+                                    "type":"string"
+                                }
+                            },
+                            "example":{
+                                "Message": "yay! you've successfully registered your user account :)"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description":"Bad Request",
+                        "schema":{
+                            "type":"object",
+                            "properties":{
+                                "Message":{
+                                    "type":"string"
+                                }
+                            },
+                            "example":{
+                                "Message": "oops! It looks like that user already exists :("
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login":{
+            "post":{
+                "tags":["Authentication"],
+                "summary":"Login with an existing user account",
+                "description":"For login",
+                "operationId":"post_login",
+                "produces":["application/json"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email":{
+                                        "type":"string",
+                                        "example":"demo-user@gmail.com",
+                                        "description":"Email",
+                                        "required":true
+                                    },
+                                    "password":{
+                                        "type":"string",
+                                        "example":"demouserpassword",
+                                        "description":"Password",
+                                        "required":true
+                                    }
+                                },
+                                "example":{
+                                    "email":"demo-user@gmail.com",
+                                    "password":"demouserpassword"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK",
+                        "schema":{
+                            "type":"object",
+                            "properties":{
+                                "access_token":{
+                                    "type":"string"
+                                },
+                                "token_type":{
+                                    "type":"string"
+                                },
+                                "expires_in":{
+                                    "type":"string"
+                                }
+                            },
+                            "example":{
+                                "access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1Nzg2LCJlbWFpbCI6ImRlbW8xMjM0QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NTUzMjQ2MDIsImV4cCI6MTU1NTQxMTAwMn0.mo85iKuAQ_h8n8-6pkeNNs5CCnV0G8hScxhi_ml_Q6c", 
+                                "token_type": "Bearer",
+                                "expires_in": "86400"
+                            }
+                        }
+                    },
+                    "401":{
+                        "description":"Unauthorized",
+                        "schema":{
+                            "type":"object",
+                            "properties":{
+                                "Message":{
+                                    "type":"string"
+                                }
+                            },
+                            "example":{
+                                "Message": "invalid login - bad password"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/search":{ 
+            "get":{
+                    "tags":["Search"],
+                    "description":"Search for Offence data",
+                    "operationId":"get_search",
+                    "produces":["application/json"],
+                    "parameters":[
+                        {
+                            "name":"offence",
+                            "in":"query",
+                            "description":"Name of the Offence to search for",
+                            "required":true,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"area",
+                            "in":"query",
+                            "description":"List of comma-separated Areas (LGAs) to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"age",
+                            "in":"query",
+                            "description":"List of comma-separated Ages to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"gender",
+                            "in":"query",
+                            "description":"List of comma-separated Genders to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"year",
+                            "in":"query",
+                            "description":"List of comma-separated Years to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"month",
+                            "in":"query",
+                            "description":"List of comma-separated Months to filter search results by (1-12)",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        }
+                    ],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "query":{
+                                        "type":"object",
+                                        "items":{
+                                            "type":"array",
+                                            "properties":{
+                                                "offence":{
+                                                    "type":"string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "result":{
+                                        "type":"object",
+                                        "items":{
+                                            "type":"array",
+                                            "properties":{
+                                                "LGA":{
+                                                    "type":"string"
+                                                },
+                                                "total":{
+                                                    "type":"integer"
+                                                },
+                                                "lat":{
+                                                    "type":"string"
+                                                },
+                                                "lng":{
+                                                    "type":"string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "400":{
+                            "description":"Bad Request",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "Message":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "Message": "oops! it looks like you're missing the offence query parm"
+                                }
+                            }
+                        },
+                        "401":{
+                            "description":"Unauthorized",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "Message":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "Message": "oh no! it looks like your authorization token is invalid..."
+                                }
+                            }
+                        }
+                    }
+            }
+        },
+        "/search-without-verifyToken":{
+            "get":{
+                    "tags":["Search"],
+                    "summary":"This search component do not need verifyToken",
+                    "description":"Search for Offence data (without Token)",
+                    "operationId":"get_search_without_verifyToken",
+                    "produces":["application/json"],
+                    "parameters":[
+                        {
+                            "name":"offence",
+                            "in":"query",
+                            "description":"Name of the Offence to search for",
+                            "required":true,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"area",
+                            "in":"query",
+                            "description":"List of comma-separated Areas (LGAs) to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"age",
+                            "in":"query",
+                            "description":"List of comma-separated Ages to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"gender",
+                            "in":"query",
+                            "description":"List of comma-separated Genders to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"year",
+                            "in":"query",
+                            "description":"List of comma-separated Years to filter search results by",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        },
+                        {
+                            "name":"month",
+                            "in":"query",
+                            "description":"List of comma-separated Months to filter search results by (1-12)",
+                            "required":false,
+                            "schema":{
+                                "type":"string"
+                            }
+                        }
+                    ],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "query":{
+                                        "type":"object",
+                                        "items":{
+                                            "type":"array",
+                                            "properties":{
+                                                "offence":{
+                                                    "type":"string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "result":{
+                                        "type":"object",
+                                        "items":{
+                                            "type":"array",
+                                            "properties":{
+                                                "LGA":{
+                                                    "type":"string"
+                                                },
+                                                "total":{
+                                                    "type":"integer"
+                                                },
+                                                "lat":{
+                                                    "type":"string"
+                                                },
+                                                "lng":{
+                                                    "type":"string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "400":{
+                            "description":"Bad Request",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "Message":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "Message": "oops! it looks like you're missing the offence query parm"
+                                }
+                            }
+                        },
+                        "401":{
+                            "description":"Unauthorized",
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "Message":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "Message": "oh no! it looks like your authorization token is invalid..."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/offences":{ 
+                "get":{
+                    "tags":["Helpers"],
+                    "description":"List of offences to perform searches for",
+                    "operationId":"get_offences",
+                    "produces":["application/json"],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"array",
+                                "properties":{
+                                    "offences":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "offences": "Advertising Prostitution"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/areas":{ 
+                "get":{
+                    "tags":["Helpers"],
+                    "description":"List of Areas to filter search results by",
+                    "operationId":"get_areas",
+                    "produces":["application/json"],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"array",
+                                "properties":{
+                                    "areas":{
+                                        "type":"string"
+                                    }
+                                },
+                                "example":{
+                                    "areas":"Balonne Shire Council"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/ages":{ 
+                "get":{
+                    "tags":["Helpers"],
+                    "description":"List of Ages to filter search results by",
+                    "operationId":"get_ages",
+                    "produces":["application/json"],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"array",
+                                "properties":{
+                                    "ages":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/genders":{ 
+                "get":{
+                    "tags":["Helpers"],
+                    "description":"List of Genders to filter search results by",
+                    "operationId":"get_genders",
+                    "produces":["application/json"],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"array",
+                                "properties":{
+                                    "genders":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/years":{ 
+                "get":{
+                    "tags":["Helpers"],
+                    "description":"List of Years to filter search results by",
+                    "operationId":"get_years",
+                    "produces":["application/json"],
+                    "responses":{
+                        "200":{
+                            "description":"OK",
+                            "schema":{
+                                "type":"array",
+                                "properties":{
+                                    "years":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        
+    }
+}
